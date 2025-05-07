@@ -91,15 +91,15 @@
         <div class="inputs">
             <div class="input-group">
                 <label for="areia">Areia (%):</label>
-                <input type="number" id="areia" min="0" max="100" value="40">
+                <input type="number" id="areia" min="0" max="100" value="0">
             </div>
             <div class="input-group">
                 <label for="silte">Silte (%):</label>
-                <input type="number" id="silte" min="0" max="100" value="30">
+                <input type="number" id="silte" min="0" max="100" value="0">
             </div>
             <div class="input-group">
                 <label for="argila">Argila (%):</label>
-                <input type="number" id="argila" min="0" max="100" value="30">
+                <input type="number" id="argila" min="0" max="100" value="0">
             </div>
         </div>
 
@@ -133,25 +133,19 @@
             console.log(`Analisando: Areia=${areia}, Silte=${silte}, Argila=${argila}`);
             
             // Areia
-            if (areia >= 90 && argila <= 10) return "areia";
+            if (areia >= 85 && silte < 15 && argila < 10) return "areia";
             
             // Areia Franca
-            if (areia >= 70 && areia < 90 && argila <= 15) return "areia-franca";
+            if (areia >= 70 && areia < 90 && silte < 30 && argila < 15) return "areia-franca";
             
             // Franco Arenoso
-            if ((areia >= 43 && areia < 85 && silte < 50 && argila < 20) || 
-                (areia >= 52 && areia < 70 && silte < 50 && argila < 20)) {
+            if (areia >= 45 && areia < 85 && silte < 50 && argila < 20) {
                 return "franco-arenoso";
             }
             
             // Franco Argiloso Arenoso
-            if (areia >= 45 && areia < 80 && argila >= 20 && argila < 35) {
+            if (areia >= 45 && areia < 80 && silte < 28 && argila >= 20 && argila < 35) {
                 return "franco-argiloso-arenosa";
-            }
-            
-            // Franco Argiloso
-            if (areia >= 20 && areia < 45 && silte >= 15 && silte < 40 && argila >= 27 && argila < 40) {
-                return "franco-argilosa";
             }
             
             // Argilo Arenoso
@@ -160,37 +154,42 @@
             }
             
             // Franco
-            if (areia >= 23 && areia < 52 && silte >= 28 && silte < 50 && argila < 27) {
+            if (areia >= 23 && areia < 55 && silte >= 28 && silte < 50 && argila >= 5 && argila < 28) {
                 return "franco";
             }
             
             // Franco Siltoso
-            if (areia < 50 && silte >= 50 && silte < 80 && argila < 27) {
+            if (areia < 50 && silte >= 50 && silte < 90 && argila < 28) {
                 return "franco-siltoso";
             }
             
             // Silte
-            if (areia < 20 && silte >= 80 && argila < 12) {
+            if (areia < 20 && silte >= 80 && argila < 10) {
                 return "silte";
             }
             
+            // Franco Argiloso
+            if (areia >= 20 && areia < 45 && silte >= 15 && silte < 53 && argila >= 28 && argila < 40) {
+                return "franco-argilosa";
+            }
+            
             // Franco Argilo Siltoso
-            if (areia < 20 && silte >= 40 && silte < 73 && argila >= 27 && argila < 40) {
+            if (areia < 20 && silte >= 40 && silte < 73 && argila >= 28 && argila < 40) {
                 return "franco-argilo-siltosa";
             }
             
-            // Argilo Siltoso
-            if (areia < 20 && silte >= 40 && argila >= 40 && argila < 60) {
-                return "argilo-siltosa";
-            }
-            
             // Argila
-            if (argila >= 40 && argila < 60 && ((areia >= 20 && areia < 45) || (silte >= 15 && silte < 40))) {
+            if (areia < 45 && silte < 40 && argila >= 40 && argila < 60) {
                 return "argila";
             }
             
+            // Argilo Siltoso
+            if (areia < 20 && silte >= 40 && silte < 60 && argila >= 40 && argila < 60) {
+                return "argilo-siltosa";
+            }
+            
             // Muito Argiloso
-            if (argila >= 60) {
+            if (areia < 40 && silte < 40 && argila >= 60) {
                 return "muito-argilosa";
             }
             
