@@ -133,63 +133,63 @@
             console.log(`Analisando: Areia=${areia}, Silte=${silte}, Argila=${argila}`);
             
             // Areia
-            if (areia >= 85 && silte < 15 && argila < 10) return "areia";
+            if (areia >= 85 && silte <= 15 && argila <= 10) return "areia";
             
             // Areia Franca
-            if (areia >= 70 && areia < 90 && silte < 30 && argila < 15) return "areia-franca";
+            if (areia >= 70 && areia < 90 && silte <= 30 && argila <= 15) return "areia-franca";
             
             // Franco Arenoso
-            if (areia >= 45 && areia < 85 && silte < 50 && argila < 20) {
+            if (areia >= 45 && areia < 85 && silte <= 50 && argila <= 20) {
                 return "franco-arenoso";
             }
             
             // Franco Argiloso Arenoso
-            if (areia >= 45 && areia < 80 && silte < 28 && argila >= 20 && argila < 35) {
+            if (areia >= 45 && areia < 80 && silte <= 28 && argila >= 20 && argila <= 35) {
                 return "franco-argiloso-arenosa";
             }
             
             // Argilo Arenoso
-            if (areia >= 45 && areia < 65 && silte < 20 && argila >= 35 && argila < 55) {
+            if (areia >= 45 && areia < 65 && silte <= 20 && argila >= 35 && argila <= 55) {
                 return "argilo-arenosa";
             }
             
             // Franco
-            if (areia >= 23 && areia < 55 && silte >= 28 && silte < 50 && argila >= 5 && argila < 28) {
+            if (areia >= 23 && areia < 55 && silte >= 28 && silte <= 50 && argila >= 5 && argila <= 28) {
                 return "franco";
             }
             
             // Franco Siltoso
-            if (areia < 50 && silte >= 50 && silte < 90 && argila < 28) {
+            if (areia < 50 && silte >= 50 && silte <= 90 && argila <= 28) {
                 return "franco-siltoso";
             }
             
             // Silte
-            if (areia < 20 && silte >= 80 && argila < 10) {
+            if (areia < 20 && silte >= 80 && argila <= 10) {
                 return "silte";
             }
             
             // Franco Argiloso
-            if (areia >= 20 && areia < 45 && silte >= 15 && silte < 53 && argila >= 28 && argila <= 40) {
+            if (areia >= 20 && areia < 45 && silte >= 15 && silte <= 53 && argila >= 28 && argila <= 40) {
                 return "franco-argilosa";
             }
             
             // Franco Argilo Siltoso
-            if (areia < 20 && silte >= 40 && silte < 73 && argila >= 28 && argila < 40) {
+            if (areia < 20 && silte >= 40 && silte <= 73 && argila >= 28 && argila <= 40) {
                 return "franco-argilo-siltosa";
             }
             
             // Argila
-            if (areia < 45 && silte < 40 && argila >= 40 && argila < 60) {
+            if (areia < 45 && silte <= 40 && argila >= 40 && argila <= 60) {
                 return "argila";
             }
             
             // Argilo Siltoso
-            if (areia < 20 && silte >= 40 && silte < 60 && argila >= 40 && argila < 60) {
+            if (areia < 20 && silte >= 40 && silte <= 60 && argila >= 40 && argila <= 60) {
                 return "argilo-siltosa";
             }
             
             // Muito Argiloso
-            if (areia < 40 && silte < 40 && argila >= 60) {
+            if (areia < 40 && silte <= 40 && argila >= 60) {
                 return "muito-argilosa";
             }
             
