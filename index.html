@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação da Textura do Solo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+        }
+       
+        .inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            flex: 1;
+            margin: 10px;
+            min-width: 100px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            min-width: 200px;
+        }
+        button:hover {
+            background-color: #1b5e20;
+        }
+        .triangulo-imagem {
+            display: block;
+            max-width: 100%;
+            margin: 20px auto;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img src="https://eventos.tiangua.ifce.edu.br/assets/images/LogoCampusTianguaHor.png" alt="logo" style="width: 200px;">
+        <h1>CLASSIFICAÇÃO DA TEXTURA DO SOLO</h1>
+<!-- Imagem inicial do triângulo -->
+        <img id="triangulo-imagem" class="triangulo-imagem" src="https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/triangulo_textural_quoos.com.br.png" alt="Triângulo Textural">
+        
+        <div class="inputs">
+            <div class="input-group">
+                <label for="areia">Areia (%):</label>
+                <input type="number" id="areia" min="0" max="100" value="40">
+            </div>
+            <div class="input-group">
+                <label for="silte">Silte (%):</label>
+                <input type="number" id="silte" min="0" max="100" value="30">
+            </div>
+            <div class="input-group">
+                <label for="argila">Argila (%):</label>
+                <input type="number" id="argila" min="0" max="100" value="30">
+            </div>
+        </div>
+
+        <div id="error" class="error"></div>
+        
+        <button onclick="classificarSolo()">Classificar Solo</button>
+        
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script>
+        // Objeto com os caminhos das imagens para cada classe de solo
+        const imagensSolo = {
+            "areia": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/areia_triangulo_textural_quoos.com.br.png",
+            "areia-franca": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/areia_franca_triangulo_textural_quoos.com.br.png",
+            "franco-arenoso": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franco_arenoso_triangulo_textural_quoos.com.br.png",
+            "franco": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franca_triangulo_textural_quoos.com.br.png",
+            "franco-siltoso": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franco_siltosa_triangulo_textural_quoos.com.br.png",
+            "silte": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/silte_triangulo_textural_quoos.com.br.png",
+            "franco-argiloso-arenosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franco_argilo_arenosa_triangulo_textural_quoos.com.br.png",
+            "franco-argilosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franco_argilosa_triangulo_textural_quoos.com.br.png",
+            "franco-argilo-siltosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/franco_argilo_siltosa_triangulo_textural_quoos.com.br.png",
+            "argilo-arenosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/argilo_arenosa_triangulo_textural_quoos.com.br.png",
+            "argila": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/argila_triangulo_textural_quoos.com.br.png",
+            "argilo-siltosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/argilo_siltosa_triangulo_textural_quoos.com.br.png",
+            "muito-argilosa": "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/muito_argilosa_triangulo_textural_quoos.com.br.png"
+        };
+
+        // Função para determinar a classe de textura com base nas percentagens
+        function determinarClasseTextura(areia, silte, argila) {
+            console.log(`Analisando: Areia=${areia}, Silte=${silte}, Argila=${argila}`);
+            
+            // Areia
+            if (areia >= 90 && argila <= 10) return "areia";
+            
+            // Areia Franca
+            if (areia >= 70 && areia < 90 && argila <= 15) return "areia-franca";
+            
+            // Franco Arenoso
+            if ((areia >= 43 && areia < 85 && silte < 50 && argila < 20) || 
+                (areia >= 52 && areia < 70 && silte < 50 && argila < 20)) {
+                return "franco-arenoso";
+            }
+            
+            // Franco Argiloso Arenoso
+            if (areia >= 45 && areia < 80 && argila >= 20 && argila < 35) {
+                return "franco-argiloso-arenosa";
+            }
+            
+            // Franco Argiloso
+            if (areia >= 20 && areia < 45 && silte >= 15 && silte < 40 && argila >= 27 && argila < 40) {
+                return "franco-argilosa";
+            }
+            
+            // Argilo Arenoso
+            if (areia >= 45 && areia < 65 && silte < 20 && argila >= 35 && argila < 55) {
+                return "argilo-arenosa";
+            }
+            
+            // Franco
+            if (areia >= 23 && areia < 52 && silte >= 28 && silte < 50 && argila < 27) {
+                return "franco";
+            }
+            
+            // Franco Siltoso
+            if (areia < 50 && silte >= 50 && silte < 80 && argila < 27) {
+                return "franco-siltoso";
+            }
+            
+            // Silte
+            if (areia < 20 && silte >= 80 && argila < 12) {
+                return "silte";
+            }
+            
+            // Franco Argilo Siltoso
+            if (areia < 20 && silte >= 40 && silte < 73 && argila >= 27 && argila < 40) {
+                return "franco-argilo-siltosa";
+            }
+            
+            // Argilo Siltoso
+            if (areia < 20 && silte >= 40 && argila >= 40 && argila < 60) {
+                return "argilo-siltosa";
+            }
+            
+            // Argila
+            if (argila >= 40 && argila < 60 && ((areia >= 20 && areia < 45) || (silte >= 15 && silte < 40))) {
+                return "argila";
+            }
+            
+            // Muito Argiloso
+            if (argila >= 60) {
+                return "muito-argilosa";
+            }
+            
+            // Caso nenhuma das condições seja atendida
+            return "franco"; // Valor padrão
+        }
+
+        // Função para formatar o nome da classe
+        function formatarClasse(classe) {
+            if (!classe) return "Não classificado";
+            
+            // Formatar o nome da classe (substituir hífens por espaços e capitalizar)
+            return classe.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        // Função para atualizar a imagem com base na classificação
+        function atualizarImagem(classe) {
+            console.log("Atualizando imagem para classe:", classe);
+            const imagem = document.getElementById('triangulo-imagem');
+            if (imagensSolo[classe]) {
+                imagem.src = imagensSolo[classe];
+                console.log("Nova URL da imagem:", imagensSolo[classe]);
+            } else {
+                // Caso não encontre a imagem específica, mantém a imagem inicial
+                console.log("Classe não encontrada no mapeamento de imagens");
+                imagem.src = "https://docente.ifsc.edu.br/joao.quoos/textura_solo/img/triangulos/triangulo_textural_quoos.com.br.png";
+            }
+        }
+        
+        // Função para classificar o solo
+        function classificarSolo() {
+            // Limpar erros anteriores
+            document.getElementById('error').textContent = "";
+            
+            // Obter valores
+            let areia = parseInt(document.getElementById('areia').value);
+            let silte = parseInt(document.getElementById('silte').value);
+            let argila = parseInt(document.getElementById('argila').value);
+            
+            console.log("Valores inseridos:", areia, silte, argila);
+            
+            // Verificar se os valores são válidos
+            if (isNaN(areia) || isNaN(silte) || isNaN(argila)) {
+                document.getElementById('error').textContent = "Por favor, preencha todos os campos com valores numéricos.";
+                return;
+            }
+            
+            // Verificar se a soma é 100%
+            let soma = areia + silte + argila;
+            console.log("Soma:", soma);
+            
+            if (soma !== 100) {
+                document.getElementById('error').textContent = `A soma dos valores deve ser 100%. Atualmente é ${soma}%.`;
+                return;
+            }
+            
+            // Determinar a classe de textura com base nas percentagens
+            let classe = determinarClasseTextura(areia, silte, argila);
+            console.log("Classe determinada:", classe);
+            
+            // Alterar a imagem com base na classificação do solo
+            atualizarImagem(classe);
+            
+            // Exibir resultado
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.textContent = `Classificação: ${formatarClasse(classe)}`;
+            resultadoDiv.style.backgroundColor = "#e8f5e9";
+            resultadoDiv.style.border = "1px solid #2e7d32";
+            resultadoDiv.style.padding = "10px";
+            console.log("Resultado exibido:", resultadoDiv.textContent);
+        }
+    </script>
+    
+</body>
+<p style="font-size: 10px; color: #777; margin-top: 30px;">
+  Desenvolvido por Wellington Angelim na disciplina de Fruticultura, Curso Técnico em Agricultura – Prof. Dr. Clemilton da Silva Ferreira
+</p>
+</html>
